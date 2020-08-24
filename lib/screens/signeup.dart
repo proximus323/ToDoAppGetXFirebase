@@ -19,6 +19,8 @@ class SignUp extends GetWidget<AuthController> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextFormField(
+                keyboardType: TextInputType.emailAddress,
+                autocorrect: false,
                 controller: _emailController,
                 decoration: InputDecoration(
                     hintText: "Email", icon: Icon(Icons.mail_outline)),
@@ -28,6 +30,8 @@ class SignUp extends GetWidget<AuthController> {
               ),
               TextFormField(
                 controller: _passwordController,
+                obscureText: true,
+                autocorrect: false,
                 decoration: InputDecoration(
                     hintText: "Password", icon: Icon(Icons.lock_outline)),
               ),
@@ -36,8 +40,18 @@ class SignUp extends GetWidget<AuthController> {
               ),
               RaisedButton(
                 onPressed: () {
-                  controller.createUser(
+                  final Future<String> returnValue = controller.createUser(
                       _emailController.text, _passwordController.text);
+                  returnValue.then((value) {
+                    if (value == "Success") {
+                      _emailController.clear();
+                      _passwordController.clear();
+                      Get.back();
+                    } else {
+                      Get.snackbar("Error", value,
+                          snackPosition: SnackPosition.BOTTOM);
+                    }
+                  });
                 },
                 child: Text("Sign Up"),
               ),

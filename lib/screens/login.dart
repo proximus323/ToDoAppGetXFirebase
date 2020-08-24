@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:to_do_app/controllers/authController.dart';
 import 'package:to_do_app/screens/signeup.dart';
 
-class Login extends StatelessWidget {
+class Login extends GetWidget<AuthController> {
   @override
   Widget build(BuildContext context) {
     TextEditingController _emailController = TextEditingController();
@@ -19,6 +20,9 @@ class Login extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                autocorrect: false,
                 decoration: InputDecoration(
                     hintText: "Email", icon: Icon(Icons.mail_outline)),
               ),
@@ -26,6 +30,8 @@ class Login extends StatelessWidget {
                 height: 18,
               ),
               TextFormField(
+                controller: _passwordController,
+                obscureText: true,
                 decoration: InputDecoration(
                     hintText: "Password", icon: Icon(Icons.lock_outline)),
               ),
@@ -33,7 +39,10 @@ class Login extends StatelessWidget {
                 height: 18,
               ),
               RaisedButton(
-                onPressed: () {},
+                onPressed: () {
+                  controller.signIn(
+                      _emailController.text, _passwordController.text);
+                },
                 child: Text("Login"),
               ),
               FlatButton(

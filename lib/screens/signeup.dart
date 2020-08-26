@@ -5,6 +5,7 @@ import 'package:to_do_app/controllers/authController.dart';
 class SignUp extends GetWidget<AuthController> {
   @override
   Widget build(BuildContext context) {
+    TextEditingController _nameController = TextEditingController();
     TextEditingController _emailController = TextEditingController();
     TextEditingController _passwordController = TextEditingController();
 
@@ -18,6 +19,10 @@ class SignUp extends GetWidget<AuthController> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(hintText: "Name"),
+              ),
               TextFormField(
                 keyboardType: TextInputType.emailAddress,
                 autocorrect: false,
@@ -40,18 +45,8 @@ class SignUp extends GetWidget<AuthController> {
               ),
               RaisedButton(
                 onPressed: () {
-                  final Future<String> returnValue = controller.createUser(
+                  controller.createUser(_nameController.text,
                       _emailController.text, _passwordController.text);
-                  returnValue.then((value) {
-                    if (value == "Success") {
-                      _emailController.clear();
-                      _passwordController.clear();
-                      Get.back();
-                    } else {
-                      Get.snackbar("Error", value,
-                          snackPosition: SnackPosition.BOTTOM);
-                    }
-                  });
                 },
                 child: Text("Sign Up"),
               ),

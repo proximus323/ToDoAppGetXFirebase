@@ -1,8 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-Auth import 'package:to_do_app/screens/home.dart';
+import 'package:to_do_app/controllers/userController.dart';
+import 'package:to_do_app/models/user.dart';
+import 'package:to_do_app/screens/home.dart';
 import 'package:to_do_app/screens/login.dart';
 import 'package:to_do_app/services/auth.dart';
+import 'package:to_do_app/services/database.dart';
 
 class AuthController extends GetxController {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -13,29 +16,41 @@ class AuthController extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
     _user.bindStream(_firebaseAuth.authStateChanges());
   }
 
-  Future<String> createUser(String _email, String _password) async {
-    final String returnValue = await Auth(auth: _firebaseAuth).createAccount(
+  createUser(String _name, String _email, String _password) async {
+    await Auth(auth: _firebaseAuth).createAccount(
       email: _email,
       password: _password,
     );
-    return returnValue;
+    UserModel _userModel = UserModel();
+    _userModel.id = _firebaseAuth.currentUser.uid;
+    _userModel.name = _name;
+    _userModel.email = _email;
+
+    if (await DataBase().createNewUser(_userModel)) {
+      Get.find<UserController>().user = _userModel;
+      Get.back();
+    }
   }
 
-  Future<String> signIn(String _email, String _password) async {
-    final String returnValue = await Auth(auth: _firebaseAuth).signIn(
-      email: _email,
-      password: _password,
-    );
-    if (returnValue == "Success") Get.to(Home());
+  signIn(String _email, String _password) async {
+    await Auth(auth: _firebaseAuth)
+        .signIn(
+          email: _email,
+          password: _password,
+        )
+        .then((value) => () async {
+              Get.find<UserController>().user =
+                  await DataBase().getUser(value.user.uid);
+              if (value != null) Get.to(Home());
+            });
   }
 
   void signOut() async {
     await Auth(auth: _firebaseAuth).signOut();
-    _user = null;
-    Get.offAll(Login());
+    Get.find<UserController>().clear();
+    Get.off(Login());
   }
 }

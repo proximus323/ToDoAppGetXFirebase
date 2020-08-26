@@ -18,13 +18,14 @@ class Auth {
     }
   }
 
-  Future<String> signIn({String email, String password}) async {
+  Future<UserCredential> signIn({String email, String password}) async {
     try {
-      await auth.signInWithEmailAndPassword(
+      UserCredential _authResult = await auth.signInWithEmailAndPassword(
           email: email.trim(), password: password.trim());
-      return "Success";
+      return _authResult;
     } on FirebaseAuthException catch (e) {
-      return e.message;
+      Get.snackbar("Error", e.message, snackPosition: SnackPosition.BOTTOM);
+      rethrow;
     } catch (e) {
       rethrow;
     }

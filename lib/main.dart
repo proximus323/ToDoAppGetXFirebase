@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:to_do_app/controllers/authController.dart';
-import 'package:to_do_app/controllers/binding/authBinding.dart';
+import 'package:to_do_app/controllers/userController.dart';
 import 'package:to_do_app/screens/home.dart';
 import 'package:to_do_app/screens/login.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -18,7 +18,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        home: GetBuilder<AuthController>(
+        home: GetX(
+            initState: (state) => {
+                  Get.put<UserController>(UserController()),
+                  Get.put<AuthController>(AuthController())
+                },
             init: AuthController(),
             builder: (_) {
               return (_.user != null) ? Home() : Login();

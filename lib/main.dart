@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:to_do_app/controllers/authController.dart';
+import 'package:to_do_app/controllers/datetimeController.dart';
 import 'package:to_do_app/controllers/userController.dart';
 import 'package:to_do_app/screens/home.dart';
 import 'package:to_do_app/screens/login.dart';
@@ -21,7 +22,8 @@ class MyApp extends StatelessWidget {
         home: GetX(
             initState: (state) => {
                   Get.put<UserController>(UserController()),
-                  Get.put<AuthController>(AuthController())
+                  Get.put<AuthController>(AuthController()),
+                  Get.put<DateTimeController>(DateTimeController())
                 },
             init: AuthController(),
             builder: (_) {
